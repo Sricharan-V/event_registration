@@ -130,5 +130,47 @@ def delete_registrant(event_id, reg_index):
 # For simplicity, let's add redirect to update pages or implement inline later.
 
 
+@app.route('/admin/edit_event/<int:event_id>', methods=['GET', 'POST'])
+def edit_event(event_id):
+    if not session.get('admin'):
+        return redirect(url_for('admin'))
+
+    event = next((e for e in events if e['id'] == event_id), None)
+    if not event:
+        return "Event not found", 404
+
+    if request.method == 'POST':
+        event['name'] = request.form.get('event_name')
+        event['date'] = request.form.get('event_date')
+        event['venue'] = request.form.get('event_venue')
+        event['description'] = request.form.get('event_description')
+        flash('Event updated successfully.', 'success')
+        return redirect(url_for('dashboard'))
+
+    return render_template('edit_event.html', event=event)
+
+
+@app.route('/admin/edit_registrant/<int:event_id>/<int:reg_index>', methods=['GET', 'POST'])
+def edit_registrant(event_id, reg_index):
+    if not session.get('admin'):
+        return redirect(url_for('admin'))
+
+    regs = [r for r in registrations if r['event_id'] == event_id]
+    if reg_index < 0 or reg_index >= len(regs):
+        return "Registrant not found", 404
+
+    reg = regs[reg_index]
+
+    if request.method == 'POST':
+        reg['name'] = request.form.get('name')
+        reg['email'] = request.form.get('email')
+        reg['phone'] = request.form.get('phone')
+        flash('Registrant updated successfully.', 'success')
+        return redirect(url_for('dashboard'))
+
+    return render_template('edit_registrant.html', reg=reg, event_id=event_id, reg_index=reg_index)
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)

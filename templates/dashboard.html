@@ -66,11 +66,12 @@
 								Event</button>
 						</form>
 					</td>
+					<td><a href="{{ url_for('edit_event', event_id=e.id) }}" class="btn btn-warning btn-sm me-1">Edit</a></td>
 				</tr>
 				{% endfor %}
 			</tbody>
 		</table>
-		
+
 
 		<!-- Registered Users Table -->
 		<h4>Events and Registrants</h4>
@@ -105,6 +106,7 @@
 										onclick="return confirm('Delete this registrant?')">Delete</button>
 								</form>
 							</td>
+							<td><a href="{{ url_for('edit_registrant', event_id=event.id, reg_index=loop.index0) }}" class="btn btn-warning btn-sm me-1">Edit</a></td>
 						</tr>
 						{% endfor %}
 					</tbody>
