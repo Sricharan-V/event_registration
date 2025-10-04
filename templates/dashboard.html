@@ -4,18 +4,31 @@
 <head>
 	<title>Admin Dashboard</title>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+	<link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
 </head>
 
 <body>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+		<div class="container">
+			<!-- Left side: App Title -->
+			<a class="navbar-brand" href="{{ url_for('dashboard') }}">EventReg Admin</a>
+
+			<!-- Right side: Logout button -->
+			<div class="d-flex ms-auto">
+				<a href="{{ url_for('admin_logout') }}" class="btn btn-outline-light btn-sm">Logout</a>
+			</div>
+		</div>
+	</nav>
+
 	{% with messages = get_flashed_messages(with_categories=true) %}
-		{% if messages %}
-			{% for category, message in messages %}
-				<div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-					{{ message }}
-					<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-				</div>
-			{% endfor %}
-		{% endif %}
+	{% if messages %}
+	{% for category, message in messages %}
+	<div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+		{{ message }}
+		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
+	{% endfor %}
+	{% endif %}
 	{% endwith %}
 
 	<div class="container mt-5">
@@ -106,7 +119,8 @@
 										onclick="return confirm('Delete this registrant?')">Delete</button>
 								</form>
 							</td>
-							<td><a href="{{ url_for('edit_registrant', event_id=event.id, reg_index=loop.index0) }}" class="btn btn-warning btn-sm me-1">Edit</a></td>
+							<td><a href="{{ url_for('edit_registrant', event_id=event.id, reg_index=loop.index0) }}"
+									class="btn btn-warning btn-sm me-1">Edit</a></td>
 						</tr>
 						{% endfor %}
 					</tbody>
@@ -119,7 +133,7 @@
 		{% endfor %}
 
 
-		
+
 
 	</div>
 </body>
