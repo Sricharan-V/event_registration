@@ -27,7 +27,7 @@
 </nav>
 
 <section class="container mt-5">
-  <h2>Register for the Event</h2>
+  <h2>Register for {{ event.name }}</h2>
   <form id="registrationForm" method="POST" action="{{ url_for('submit') }}" novalidate>
     <div class="mb-3">
       <label for="name" class="form-label">Full Name *</label>
@@ -46,6 +46,8 @@
       <input type="tel" class="form-control" id="phone" name="phone" pattern="^\d{10}$" required />
       <div class="invalid-feedback">Please enter a 10-digit phone number.</div>
     </div>
+
+    <input type="hidden" name="event_id" value="{{ event.id }}" />
 
     <button type="submit" class="btn btn-primary">Submit Registration</button>
   </form>

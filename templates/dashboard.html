@@ -23,23 +23,37 @@
     </div>
 
     <!-- Registered Users Table -->
-    <h4>Registrants</h4>
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th>Name</th><th>Email</th><th>Phone</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for r in registrations %}
-        <tr>
-          <td>{{ r.name }}</td>
-          <td>{{ r.email }}</td>
-          <td>{{ r.phone }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <h4>Events and Registrants</h4>
+    
+    {% for event in events %}
+    <div class="card mb-4">
+    <div class="card-header">
+        <h5>{{ event.name }} ({{ event.date }})</h5>
+    </div>
+    <div class="card-body">
+        <h6>Registrants:</h6>
+        {% if registrations_by_event[event.id] %}
+        <table class="table table-bordered">
+        <thead>
+            <tr><th>Name</th><th>Email</th><th>Phone</th></tr>
+        </thead>
+        <tbody>
+            {% for reg in registrations_by_event[event.id] %}
+            <tr>
+            <td>{{ reg.name }}</td>
+            <td>{{ reg.email }}</td>
+            <td>{{ reg.phone }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+        {% else %}
+        <p>No registrants yet.</p>
+        {% endif %}
+    </div>
+    </div>
+    {% endfor %}
+
 
     <!-- Events Table -->
     <h4>Events</h4>
