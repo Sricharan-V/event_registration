@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -96,6 +96,38 @@ def dashboard():
         registrations_by_event[event['id']] = [r for r in registrations if r['event_id'] == event['id']]
     return render_template('dashboard.html', events=events, registrations_by_event=registrations_by_event)
 
+
+
+# Delete event by ID
+@app.route('/admin/delete_event/<int:event_id>', methods=['POST'])
+def delete_event(event_id):
+    if not session.get('admin'):
+        return redirect(url_for('admin'))
+    global events, registrations
+    events = [e for e in events if e['id'] != event_id]
+    # Also remove registrations linked to this event
+    registrations = [r for r in registrations if r['event_id'] != event_id]
+    flash('Event and related registrations deleted.', 'success')
+    return redirect(url_for('dashboard'))
+
+# Delete registrant by index or unique id (for simplicity, by index)
+@app.route('/admin/delete_registrant/<int:event_id>/<int:reg_index>', methods=['POST'])
+def delete_registrant(event_id, reg_index):
+    if not session.get('admin'):
+        return redirect(url_for('admin'))
+    regs = [r for r in registrations if r['event_id'] == event_id]
+    if reg_index < 0 or reg_index >= len(regs):
+        flash('Invalid registrant.', 'danger')
+        return redirect(url_for('dashboard'))
+
+    # Remove registrant from main registrations list
+    reg_to_delete = regs[reg_index]
+    registrations.remove(reg_to_delete)
+    flash('Registrant deleted.', 'success')
+    return redirect(url_for('dashboard'))
+
+# Update routes would normally need forms:
+# For simplicity, let's add redirect to update pages or implement inline later.
 
 
 if __name__ == '__main__':
