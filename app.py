@@ -19,33 +19,39 @@ events = [
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('index.html', events=events)
 
 
 @app.route('/register')
 def register():
-    return render_template('register.html')
+    event_id = request.args.get('event_id', type=int)
+    event = next((e for e in events if e['id'] == event_id), None)
+    if not event:
+        return "Event not found", 404
+    return render_template('register.html', event=event)
 
 @app.route('/submit', methods=['POST'])
 def submit():
     name = request.form.get('name')
     email = request.form.get('email')
     phone = request.form.get('phone')
+    event_id = request.form.get('event_id', type=int)
 
-    # Simple server-side validation
-    if not name or not email or not phone or len(phone) != 10 or not phone.isdigit():
-        # Could redirect back with error message in real app
-        return "Invalid input, please fill all fields correctly.", 400
+    if not name or not email or not phone or not event_id:
+        return "Invalid input", 400
 
-    registration = {
-        'name': name,
-        'email': email,
-        'phone': phone
-    }
+    if len(phone) != 10 or not phone.isdigit():
+        return "Invalid phone number", 400
+
+    event = next((e for e in events if e['id'] == event_id), None)
+    if not event:
+        return "Event not found", 404
+
+    registration = {'name': name, 'email': email, 'phone': phone, 'event_id': event_id}
     registrations.append(registration)
 
-    # Redirect to success page passing name info via query or session (simplified here)
     return redirect(url_for('success', name=name))
+
 
 @app.route('/success')
 def success():
@@ -72,7 +78,6 @@ def dashboard():
     if not session.get('admin'):
         return redirect(url_for('admin'))
     if request.method == 'POST':
-        # Add a new event
         eid = len(events) + 1
         name = request.form.get('event_name')
         date = request.form.get('event_date')
@@ -85,7 +90,12 @@ def dashboard():
             'venue': venue,
             'description': description
         })
-    return render_template('dashboard.html', registrations=registrations, events=events)
+    # Group registrations by event_id
+    registrations_by_event = {}
+    for event in events:
+        registrations_by_event[event['id']] = [r for r in registrations if r['event_id'] == event['id']]
+    return render_template('dashboard.html', events=events, registrations_by_event=registrations_by_event)
+
 
 
 if __name__ == '__main__':
