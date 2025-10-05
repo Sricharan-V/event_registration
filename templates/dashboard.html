@@ -10,26 +10,12 @@
 <body>
 	<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
 		<div class="container">
-			<!-- Left side: App Title -->
 			<a class="navbar-brand" href="{{ url_for('dashboard') }}">EventReg Admin</a>
-
-			<!-- Right side: Logout button -->
 			<div class="d-flex ms-auto">
 				<a href="{{ url_for('admin_logout') }}" class="btn btn-outline-light btn-sm">Logout</a>
 			</div>
 		</div>
 	</nav>
-
-	{% with messages = get_flashed_messages(with_categories=true) %}
-	{% if messages %}
-	{% for category, message in messages %}
-	<div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-		{{ message }}
-		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-	</div>
-	{% endfor %}
-	{% endif %}
-	{% endwith %}
 
 	<div class="container mt-5">
 		<h2>Admin Dashboard</h2>
@@ -40,101 +26,30 @@
 				<h4>Add New Event</h4>
 				<form method="post">
 					<input type="text" name="event_name" class="form-control mb-2" placeholder="Event Name" required>
-
 					<input type="date" name="event_date" class="form-control mb-2" required>
-
 					<input type="text" name="event_venue" class="form-control mb-2" placeholder="Venue" required>
-					<textarea name="event_description" class="form-control mb-2" placeholder="Description" required></textarea>
-
+					<textarea name="event_description" class="form-control mb-2" placeholder="Description"
+						required></textarea>
 					<button type="submit" class="btn btn-success">Add Event</button>
 				</form>
 			</div>
 		</div>
 
-
-		<!-- Events Table -->
+		<!-- Events List -->
 		<h4>Events</h4>
-		<table class="table table-bordered">
-			<thead>
-				<tr>
-					<th>ID</th>
-					<th>Name</th>
-					<th>Date</th>
-					<th>Venue</th>
-					<th>Description</th>
-					<th>Actions</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for e in events %}
-				<tr>
-					<td>{{ e.id }}</td>
-					<td>{{ e.name }}</td>
-					<td>{{ e.date }}</td>
-					<td>{{ e.venue }}</td>
-					<td>{{ e.description }}</td>
-					<td>
-						<form method="post" action="{{ url_for('delete_event', event_id=e.id) }}" style="display:inline;">
-							<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Delete this event?')">Delete
-								Event</button>
-						</form>
-					</td>
-					<td><a href="{{ url_for('edit_event', event_id=e.id) }}" class="btn btn-warning btn-sm me-1">Edit</a></td>
-				</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-
-
-		<!-- Registered Users Table -->
-		<h4>Events and Registrants</h4>
-
-		{% for event in events %}
-		<div class="card mb-4">
-			<div class="card-header">
-				<h5>{{ event.name }} ({{ event.date }})</h5>
-			</div>
-			<div class="card-body">
-				<h6>Registrants:</h6>
-				{% if registrations_by_event[event.id] %}
-				<table class="table table-bordered">
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>Email</th>
-							<th>Phone</th>
-						</tr>
-					</thead>
-					<tbody>
-						{% for reg in registrations_by_event[event.id] %}
-						<tr>
-							<td>{{ reg.name }}</td>
-							<td>{{ reg.email }}</td>
-							<td>{{ reg.phone }}</td>
-							<td>
-								<form method="post"
-									action="{{ url_for('delete_registrant', event_id=event.id, reg_index=loop.index0) }}"
-									style="display:inline;">
-									<button type="submit" class="btn btn-danger btn-sm"
-										onclick="return confirm('Delete this registrant?')">Delete</button>
-								</form>
-							</td>
-							<td><a href="{{ url_for('edit_registrant', event_id=event.id, reg_index=loop.index0) }}"
-									class="btn btn-warning btn-sm me-1">Edit</a></td>
-						</tr>
-						{% endfor %}
-					</tbody>
-				</table>
-				{% else %}
-				<p>No registrants yet.</p>
-				{% endif %}
-			</div>
-		</div>
-		{% endfor %}
-
-
-
-
+		<ul class="list-group">
+			{% for e in events %}
+			<li class="list-group-item d-flex justify-content-between align-items-center">
+				<a href="{{ url_for('admin_event_detail', event_id=e.id) }}">{{ e.name }} ({{ e.date }})</a>
+				<form method="post" action="{{ url_for('delete_event', event_id=e.id) }}" style="margin:0;">
+					<button type="submit" class="btn btn-danger btn-sm"
+						onclick="return confirm('Delete this event?')">Delete</button>
+				</form>
+			</li>
+			{% else %}
+			<li class="list-group-item">No events found.</li>
+			{% endfor %}
+		</ul>
 	</div>
 </body>
 

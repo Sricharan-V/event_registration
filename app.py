@@ -51,7 +51,7 @@ def update_event(event_id, name, date, venue, description):
                (name, date, venue, description, event_id))
     db.commit()
 
-def delete_event(event_id):
+def delete_event_by_id(event_id):
     db = get_db()
     db.execute("DELETE FROM events WHERE id = ?", (event_id,))
     db.commit()
@@ -125,9 +125,10 @@ def dashboard():
 def delete_event(event_id):
     if not session.get('admin'):
         return redirect(url_for('admin'))
-    delete_event(event_id)
+    delete_event_by_id(event_id)  # call helper, not route
     flash('Event deleted successfully.', 'success')
     return redirect(url_for('dashboard'))
+
 
 @app.route('/admin/delete_registrant/<int:event_id>/<int:reg_index>', methods=['POST'])
 def delete_registrant(event_id, reg_index):
@@ -142,7 +143,9 @@ def delete_registrant(event_id, reg_index):
     reg_id = registrants[reg_index]['id']
     delete_registrant_by_id(reg_id)
     flash('Registrant deleted.', 'success')
-    return redirect(url_for('dashboard'))
+    # Redirect back to the event detail page, not the dashboard
+    return redirect(url_for('admin_event_detail', event_id=event_id))
+
 
 @app.route('/admin/edit_event/<int:event_id>', methods=['GET', 'POST'])
 def edit_event(event_id):
@@ -219,6 +222,20 @@ def submit():
     add_registrant(event_id, name, email, phone)
 
     return redirect(url_for('success', name=name))
+
+
+@app.route('/admin/event/<int:event_id>')
+def admin_event_detail(event_id):
+    if not session.get('admin'):
+        return redirect(url_for('admin'))
+
+    event = get_event_by_id(event_id)
+    if not event:
+        return "Event not found", 404
+
+    registrants = get_registrants_by_event(event_id)
+    return render_template('event_detail.html', event=event, registrants=registrants)
+
 
 @app.route('/success')
 def success():
