@@ -97,6 +97,12 @@ def dashboard():
     return render_template('dashboard.html', events=events, registrations_by_event=registrations_by_event)
 
 
+@app.route('/admin/logout')
+def admin_logout():
+    session.pop('admin', None)  # Remove admin login flag from session
+    # flash('You have been logged out successfully.', 'info')
+    return redirect(url_for('admin'))  # Redirect to admin login page
+
 
 # Delete event by ID
 @app.route('/admin/delete_event/<int:event_id>', methods=['POST'])
