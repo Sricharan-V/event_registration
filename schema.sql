@@ -1,0 +1,18 @@
+DROP TABLE IF EXISTS events;
+CREATE TABLE events (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    date TEXT NOT NULL,
+    venue TEXT NOT NULL,
+    description TEXT NOT NULL
+);
+
+DROP TABLE IF EXISTS registrants;
+CREATE TABLE registrants (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    event_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    phone TEXT NOT NULL,
+    FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE
+);
