@@ -76,6 +76,7 @@ ENV/
 # Logs and databases
 *.log
 *.sqlite3
+database.db
 
 # Static files that can be generated
 static/dist/

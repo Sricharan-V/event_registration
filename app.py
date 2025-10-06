@@ -1,11 +1,15 @@
 import sqlite3
+import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash, g
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key_here'
+app.secret_key = os.environ.get('SECRET_KEY', 'default_fallback_secret')
 
 DATABASE = 'database.db'
-ADMIN_PASSWORD = 'admin123'
+ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'admin123')
 
 def get_db():
     db = getattr(g, '_database', None)
