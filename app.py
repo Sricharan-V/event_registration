@@ -2,6 +2,7 @@ import sqlite3
 import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash, g
 from dotenv import load_dotenv
+from werkzeug.security import generate_password_hash, check_password_hash
 
 load_dotenv()
 
@@ -10,6 +11,132 @@ app.secret_key = os.environ.get('SECRET_KEY', 'default_fallback_secret')
 
 DATABASE = 'database.db'
 ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'admin123')
+
+def add_user(username, email, password, full_name=None, phone=None):
+    db = get_db()
+    pw_hash = generate_password_hash(password)
+    cur = db.cursor()
+    try:
+        cur.execute(
+            "INSERT INTO users (username, email, password_hash, full_name, phone) VALUES (?, ?, ?, ?, ?)",
+            (username, email, pw_hash, full_name, phone)
+        )
+        db.commit()
+        return cur.lastrowid
+    except sqlite3.IntegrityError:
+        return None
+
+
+def get_user_by_username(username):
+    db = get_db()
+    cur = db.execute("SELECT * FROM users WHERE username = ?", (username,))
+    return cur.fetchone()
+
+
+def get_user_by_id(user_id):
+    db = get_db()
+    cur = db.execute("SELECT * FROM users WHERE id = ?", (user_id,))
+    return cur.fetchone()
+
+
+def update_user_info(user_id, full_name, phone):
+    db = get_db()
+    db.execute(
+        "UPDATE users SET full_name = ?, phone = ? WHERE id = ?",
+        (full_name, phone, user_id)
+    )
+    db.commit()
+
+@app.route('/register_user', methods=['GET', 'POST'])
+def register_user():
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        password = request.form['password']
+        full_name = request.form.get('full_name')
+        phone = request.form.get('phone')
+
+        existing_user = get_user_by_username(username)
+        if existing_user:
+            flash('Username already exists.', 'danger')
+            return render_template('register_user.html')
+
+        user_id = add_user(username, email, password, full_name, phone)
+        if user_id:
+            flash('Registration successful, please log in.', 'success')
+            return redirect(url_for('login'))
+        else:
+            flash('Error while registering, please try again.', 'danger')
+    return render_template('register_user.html')
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    session.pop('_flashes', None)
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        user = get_user_by_username(username)
+        if user is None:
+            flash('User does not exist.', 'danger')
+        elif not check_password_hash(user['password_hash'], password):
+            flash('Wrong password.', 'danger')
+        else:
+            session['user_id'] = user['id']
+            session['username'] = user['username']
+            flash(f'Welcome {user["username"]}!', 'success')
+            return redirect(url_for('home'))
+    
+    return render_template('login.html')
+
+
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    flash('You were logged out.', 'info')
+    return redirect(url_for('home'))
+
+
+def user_registered(event_id, user_id):
+    db = get_db()
+    cur = db.execute('SELECT 1 FROM registrants WHERE event_id = ? AND user_id = ?', (event_id, user_id))
+    return cur.fetchone() is not None
+
+
+@app.route('/unregister/<int:event_id>', methods=['POST'])
+def unregister(event_id):
+    if not session.get('user_id'):
+        return redirect(url_for('login'))
+    user_id = session['user_id']
+
+    db = get_db()
+    db.execute('DELETE FROM registrants WHERE event_id = ? AND user_id = ?', (event_id, user_id))
+    db.commit()
+    flash('You have been unregistered from the event.', 'success')
+    return redirect(url_for('my_events'))
+
+def get_user_registrations(user_id):
+    db = get_db()
+    cur = db.execute("""
+        SELECT events.*
+        FROM events
+        JOIN registrants ON events.id = registrants.event_id
+        WHERE registrants.user_id = ?
+    """, (user_id,))
+    return cur.fetchall()
+
+
+@app.route('/my_events')
+def my_events():
+    if not session.get('user_id'):
+        flash('Please log in to view your registered events.')
+        return redirect(url_for('login'))
+
+    user_id = session['user_id']
+    events = get_user_registrations(user_id)
+    return render_template('my_events.html', events=events)
+
 
 def get_db():
     db = getattr(g, '_database', None)
@@ -60,11 +187,11 @@ def delete_event_by_id(event_id):
     db.execute("DELETE FROM events WHERE id = ?", (event_id,))
     db.commit()
 
-def add_registrant(event_id, name, email, phone):
+def add_registrant(event_id, user_id, name, email, phone):
     db = get_db()
     cur = db.cursor()
-    cur.execute("INSERT INTO registrants (event_id, name, email, phone) VALUES (?, ?, ?, ?)",
-                (event_id, name, email, phone))
+    cur.execute("INSERT INTO registrants (event_id, user_id, name, email, phone) VALUES (?, ?, ?, ?, ?)",
+                (event_id, user_id, name, email, phone))
     db.commit()
     return cur.lastrowid
 
@@ -199,31 +326,46 @@ def home():
 
 @app.route('/register')
 def register():
+    if not session.get('user_id'):
+        flash('Please log in to register for events.')
+        return redirect(url_for('login'))
+
     event_id = request.args.get('event_id', type=int)
     event = get_event_by_id(event_id)
     if not event:
         return "Event not found", 404
 
-    return render_template('register.html', event=event)
+    registered = user_registered(event_id, session['user_id'])
+    user = get_user_by_id(session['user_id'])
+    return render_template('register.html', event=event, registered=registered, user=user)
+
 
 @app.route('/submit', methods=['POST'])
 def submit():
+    if not session.get('user_id'):
+        flash('Please log in to register.')
+        return redirect(url_for('login'))
+
+    user_id = session['user_id']
     name = request.form.get('name')
     email = request.form.get('email')
     phone = request.form.get('phone')
     event_id = request.form.get('event_id', type=int)
 
-    if not name or not email or not phone or not event_id:
+    if not all([name, email, phone, event_id]):
         return "Invalid input", 400
 
     if len(phone) != 10 or not phone.isdigit():
         return "Invalid phone number", 400
 
-    event = get_event_by_id(event_id)
-    if not event:
-        return "Event not found", 404
+    # Update user info in DB
+    update_user_info(user_id, name, phone)
 
-    add_registrant(event_id, name, email, phone)
+    if user_registered(event_id, user_id):
+        flash('Already registered for this event!', 'warning')
+        return redirect(url_for('register', event_id=event_id))
+
+    add_registrant(event_id, user_id, name, email, phone)
 
     return redirect(url_for('success', name=name))
 
