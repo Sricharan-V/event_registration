@@ -151,12 +151,6 @@ def close_connection(exception):
     if db is not None:
         db.close()
 
-def init_db():
-    with app.app_context():
-        db = get_db()
-        with open('schema.sql', 'r') as f:
-            db.executescript(f.read())
-        db.commit()
 
 def add_event(name, date, venue, description):
     db = get_db()
@@ -391,6 +385,4 @@ def success():
     return render_template('success.html', name=name)
 
 if __name__ == '__main__':
-    # Uncomment this line and run once to initialize your database tables
-    # init_db()
     app.run(debug=True)
