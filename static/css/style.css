@@ -1,3 +1,57 @@
 body {
-    padding-top: 50px
+  padding-top: 56px; /* offset for fixed navbar */
+  background-color: #f4f6f8;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar {
+  min-height: 56px;
+  padding-top: 0.25rem !important;
+  padding-bottom: 0.25rem !important;
+  background-color: #222e38 !important;
+}
+
+.navbar-brand {
+  font-weight: 700;
+  font-size: 1.75rem;
+  letter-spacing: 0.05em;
+}
+
+.card {
+  border-radius: 1rem;
+  box-shadow: 0 4px 24px rgba(32, 48, 64, 0.08);
+  background-color: #fff;
+  border: none;
+}
+
+.btn-cool {
+  background-color: #27cfc3;
+  color: #fff;
+  border: none;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.btn-cool:hover,
+.btn-cool:focus,
+.btn-cool:active {
+  background-color: #17ac99;
+  color: #fff;
+  outline: none;
+  box-shadow: 0 0 8px rgba(23, 172, 153, 0.6);
+}
+
+.alert-info {
+  background-color: #27cfc3;
+  color: white;
+  border-radius: 1rem;
+}
+
+footer {
+  background-color: #222e38;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fff;
+  padding: 1rem 0;
+  text-align: center;
+  margin-top: auto;
 }

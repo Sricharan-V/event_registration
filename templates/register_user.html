@@ -5,49 +5,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>User Registration</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" />
 </head>
-<body class="bg-light">
-  <div class="container py-5">
-    <div class="row justify-content-center">
-      <div class="col-md-6 col-lg-5">
-        <div class="card shadow-sm">
-          <div class="card-body p-4">
-            <h3 class="card-title mb-4 text-center">Create Account</h3>
-            {% with messages = get_flashed_messages(with_categories=true) %}
+<body class="d-flex flex-column min-vh-100" style="background-color:#f4f6f8;">
+  <div class="container py-5 flex-grow-1 d-flex align-items-center justify-content-center">
+    <div class="col-md-8 col-lg-6 mx-auto">
+      <div class="card shadow-lg rounded-4">
+        <div class="card-body p-4">
+          <h2 class="mb-4 fw-bold text-center" style="color:#27cfc3;">Create Account</h2>
+          {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-            {% for category, message in messages %}
-            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-              {{ message }}
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-            {% endfor %}
+              {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+              {% endfor %}
             {% endif %}
-            {% endwith %}
+          {% endwith %}
 
-            <form method="post" novalidate>
-              <div class="mb-3">
-                <label for="username" class="form-label">Username</label>
-                <input type="text" name="username" class="form-control" id="username" placeholder="Enter username" required />
-              </div>
-              <div class="mb-3">
-                <label for="email" class="form-label">Email address</label>
-                <input type="email" name="email" class="form-control" id="email" placeholder="name@example.com" required />
-              </div>
-              <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" name="password" class="form-control" id="password" placeholder="Password" required />
-              </div>
-              <button type="submit" class="btn btn-primary w-100">Register</button>
-            </form>
-
-            <div class="text-center mt-3">
-              <a href="{{ url_for('login') }}">Already have an account? Log in</a>
+          <form method="post" novalidate>
+            <div class="mb-3">
+              <label for="username" class="form-label">Username</label>
+              <input type="text" name="username" class="form-control" id="username" placeholder="Enter username" required />
             </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email address</label>
+              <input type="email" name="email" class="form-control" id="email" placeholder="name@example.com" required />
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" name="password" class="form-control" id="password" placeholder="Password" required />
+            </div>
+            <button type="submit" class="btn btn-cool w-100 rounded-pill fw-semibold">Register</button>
+          </form>
+          <div class="text-center mt-3">
+            <a href="{{ url_for('login') }}">Already have an account? Log in</a>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
+  <footer class="mt-auto py-3 text-center text-white" style="background-color:#222e38;">
+    &copy; 2025 Event Registration. <span class="fw-semibold">All rights reserved.</span>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

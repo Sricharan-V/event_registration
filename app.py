@@ -315,9 +315,11 @@ def edit_registrant(event_id, reg_index):
         phone = request.form.get('phone')
         update_registrant(reg['id'], name, email, phone)
         flash('Registrant updated successfully.', 'success')
-        return redirect(url_for('dashboard'))
+        # Redirect back to the event detail page
+        return redirect(url_for('admin_event_detail', event_id=event_id))
 
     return render_template('edit_registrant.html', reg=reg, event_id=event_id, reg_index=reg_index)
+
 
 @app.route('/')
 def home():
