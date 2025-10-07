@@ -24,57 +24,57 @@ The Event Registration System is a web application built with Flask to facilitat
 ### Steps to Run
 
 1. **Clone the repository (or download source code):**
-'''bash
+```bash
 git clone https://github.com/Sricharan-V/event_registration.git
 cd event_registration
-'''
+```
 
 
 2. **Create and activate a virtual environment:**
 
 For Windows (PowerShell):
-'''bash
+```bash
 python -m venv venv
 venv\Scripts\activate
-'''
+```
 
 
 For macOS/Linux:
-'''bash
+```bash
 python3 -m venv venv
 source venv/bin/activate
-'''
+```
 
 
 3. **Install dependencies:**
-'''bash
+```bash
 pip install -r requirements.txt
-'''
+```
 
 4. **Set up environment variables:**
 
 Create a `.env` file in project root and add:
-'''
+```
 SECRET_KEY=your_secret_key_here
 ADMIN_PASSWORD=your_admin_password_here
-'''
+```
 
 
 5. **Initialize the database:**
 
 Run the database initialization script(Only use it again if you want the complete database to be reset):
-'''bash
+```bash
 python init_db.py
-'''
+```
 
 6. **Run the Flask app:**
-'''bash
+```bash
 python app.py
-'''
+```
 or
-'''bash
+```bash
 flask run
-'''
+```
 
 7. **Access the application:**
 
