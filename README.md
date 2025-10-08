@@ -4,6 +4,8 @@
 
 The Event Registration System is a web application built with Flask to facilitate the creation, management, and registration for events. Users can register, log in, browse available events, and enroll in them online. Admins can create events, view registrants, and manage event details through an intuitive dashboard. The application features secure user authentication, event registration tracking, and administrative oversight.
 
+---
+
 ## Technologies Used
 
 - Python 3.x
@@ -12,6 +14,8 @@ The Event Registration System is a web application built with Flask to facilitat
 - HTML, CSS, JavaScript (with Bootstrap 5 for UI)
 - Werkzeug for password hashing
 - python-dotenv for environment variable management
+
+---
 
 ## Setup Instructions
 
@@ -80,12 +84,13 @@ flask run
 
 Open [http://localhost:5000](http://localhost:5000) in your browser.
 
+---
 
 ## Features
 
-## Database Schema
+### Database Schema
 
-### events Table
+#### events Table
 
 | Column      | Type    | Constraints          | Description                       |
 |-------------|---------|----------------------|---------------------------------|
@@ -95,7 +100,7 @@ Open [http://localhost:5000](http://localhost:5000) in your browser.
 | venue       | TEXT    | NOT NULL             | Location of the event            |
 | description | TEXT    | NOT NULL             | Description/details of the event |
 
-### registrants Table
+#### registrants Table
 
 | Column    | Type    | Constraints                  | Description                             |
 |-----------|---------|------------------------------|---------------------------------------|
@@ -107,7 +112,7 @@ Open [http://localhost:5000](http://localhost:5000) in your browser.
 | phone     | TEXT    | NOT NULL                     | Registrant's phone number              |
 |           |         | UNIQUE(event_id, user_id)    | Ensures a user can register only once per event |
 
-### users Table
+#### users Table
 
 | Column        | Type    | Constraints          | Description                  |
 |---------------|---------|----------------------|------------------------------|
