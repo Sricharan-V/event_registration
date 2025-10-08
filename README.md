@@ -134,7 +134,7 @@ Open [http://localhost:5000](http://localhost:5000) in your browser.
   ![Event Registrants](images/event_registrants.png)  
   
 - **Edit and Remove Registrants:** Admins can update registrant details or delete registrants if necessary.  
-  ![Edit Registrants](images/update_registrants.png)  
+  ![Edit Registrants](images/update_registrant.png)  
 
 ---
 
