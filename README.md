@@ -110,7 +110,7 @@ Open [http://localhost:5000](http://localhost:5000) in your browser.
   ![Success Screen](images/success.png)  
   
 - **My Events Page:** A dedicated page (`/my_events`) displays all events the user has registered for, providing quick access to manage/unregister their registrations.  
-  ![My Events](images/my_events_page.png)  
+  ![My Events](images/my_events.png)  
   
 - **Session Management:** Users can securely log out, ending their session.
   
