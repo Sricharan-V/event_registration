@@ -139,7 +139,7 @@ Open [http://localhost:5000](http://localhost:5000) in your browser.
   ![No Events](images/no_events.png)  
   
 - **Register for Events:** Logged-in users can view individual event pages and register for events. If already registered, they are notified and given the option to unregister.  
-  ![Register for Event](images/register_event.png)
+  ![Register for Event](images/event_register.png)
   
 - **Unregister Option:** Users can unregister from events, which removes their registration from the database with a single click.  
   ![Registered for Event](images/already_registered.png)
