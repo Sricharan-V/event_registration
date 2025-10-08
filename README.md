@@ -115,8 +115,7 @@ Open [http://localhost:5000](http://localhost:5000) in your browser.
 - **Session Management:** Users can securely log out, ending their session.
   
 - **Responsive UI:** The entire interface is mobile-friendly and adapts seamlessly to different devices, thanks to Bootstrap 5 styles.  
-  ![Responsive Design](images/mobile.png)  
-  ![Responsive Design](images/mobile_dropdown.png)  
+  ![Responsive Design](images/mobile.png)  ![Responsive Design](images/mobile_dropdown.png)  
 
 ---
 
@@ -135,7 +134,7 @@ Open [http://localhost:5000](http://localhost:5000) in your browser.
   ![Event Registrants](images/event_registrants.png)  
   
 - **Edit and Remove Registrants:** Admins can update registrant details or delete registrants if necessary.  
-  ![Edit Registrants](images/edit_registrants.png)  
+  ![Edit Registrants](images/update_registrants.png)  
 
 ---
 
