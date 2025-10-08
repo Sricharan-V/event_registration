@@ -83,6 +83,44 @@ Open [http://localhost:5000](http://localhost:5000) in your browser.
 
 ## Features
 
+## Database Schema
+
+### events Table
+
+| Column      | Type    | Constraints          | Description                       |
+|-------------|---------|----------------------|---------------------------------|
+| id          | INTEGER | PRIMARY KEY AUTOINCREMENT | Unique event ID                  |
+| name        | TEXT    | NOT NULL             | Name of the event                |
+| date        | TEXT    | NOT NULL             | Date of the event                |
+| venue       | TEXT    | NOT NULL             | Location of the event            |
+| description | TEXT    | NOT NULL             | Description/details of the event |
+
+### registrants Table
+
+| Column    | Type    | Constraints                  | Description                             |
+|-----------|---------|------------------------------|---------------------------------------|
+| id        | INTEGER | PRIMARY KEY AUTOINCREMENT    | Unique registrant ID                   |
+| event_id  | INTEGER | NOT NULL, FOREIGN KEY to events(id) | Event which registrant has signed up for |
+| user_id   | INTEGER | NOT NULL, FOREIGN KEY to users(id) | User who registered                    |
+| name      | TEXT    | NOT NULL                     | Registrant's name                      |
+| email     | TEXT    | NOT NULL                     | Registrant's email                     |
+| phone     | TEXT    | NOT NULL                     | Registrant's phone number              |
+|           |         | UNIQUE(event_id, user_id)    | Ensures a user can register only once per event |
+
+### users Table
+
+| Column        | Type    | Constraints          | Description                  |
+|---------------|---------|----------------------|------------------------------|
+| id            | INTEGER | PRIMARY KEY AUTOINCREMENT | Unique user ID                |
+| username      | TEXT    | UNIQUE, NOT NULL     | User's chosen username       |
+| email         | TEXT    | UNIQUE, NOT NULL     | User's email address         |
+| password_hash | TEXT    | NOT NULL             | Hashed password for security |
+| full_name     | TEXT    |                      | User's full name (optional) |
+| phone         | TEXT    |                      | User's phone number (optional) |
+
+
+---
+
 ### User-Focused Features
 
 - **Seamless User Registration:** New users can easily sign up by providing a username, email, and password. If the username already exists you will get back to registration screen again.
